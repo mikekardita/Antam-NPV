@@ -28,5 +28,5 @@ ENV DB_CONNECTION=sqlite
 ENV DB_DATABASE=/app/database/database.sqlite
 EXPOSE 8080
 
-# Jalankan server langsung
-CMD php artisan db:seed --force || true; php artisan serve --host=0.0.0.0 --port=$PORT
+# Jalankan migrasi database SQLite lalu start server
+CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT
