@@ -4,6 +4,7 @@ FROM php:8.2-cli
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
+    sqlite3 \
     libsqlite3-dev \
     && docker-php-ext-install pdo pdo_sqlite
 
@@ -21,9 +22,11 @@ RUN mkdir -p storage/framework/views storage/framework/sessions storage/framewor
 RUN touch database/database.sqlite
 RUN chmod -R 777 storage bootstrap/cache database
 
-# Set default port
+# Set default port & environment
 ENV PORT=8080
+ENV DB_CONNECTION=sqlite
+ENV DB_DATABASE=/app/database/database.sqlite
 EXPOSE 8080
 
-# Jalankan migrasi database SQLite lalu start server
-CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT
+# Jalankan migrasi database, cache config, lalu start server
+CMD php artisan migrate --force && php artisan config:cache && php artisan route:cache && php artisan serve --host=0.0.0.0 --port=$PORT
