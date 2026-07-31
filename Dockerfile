@@ -17,7 +17,7 @@ COPY . .
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN composer install --no-dev --optimize-autoloader
 
-# Siapkan folder storage, cache, & database SQLite dengan permission penuh
+# Siapkan folder storage & database SQLite dengan permission penuh
 RUN mkdir -p storage/framework/views storage/framework/sessions storage/framework/cache storage/logs bootstrap/cache database
 RUN touch database/database.sqlite
 RUN chmod -R 777 storage bootstrap/cache database
@@ -28,5 +28,5 @@ ENV DB_CONNECTION=sqlite
 ENV DB_DATABASE=/app/database/database.sqlite
 EXPOSE 8080
 
-# Jalankan migrasi database, cache config, lalu start server
-CMD php artisan migrate --force && php artisan config:cache && php artisan route:cache && php artisan serve --host=0.0.0.0 --port=$PORT
+# Jalankan server langsung
+CMD php artisan db:seed --force || true; php artisan serve --host=0.0.0.0 --port=$PORT
